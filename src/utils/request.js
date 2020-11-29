@@ -1,4 +1,6 @@
 import axios from 'axios'
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 const instance = axios.create({
     //  / 代表当前服务器地址
@@ -8,22 +10,34 @@ const instance = axios.create({
     },
 
 })
-
+// 设置请求拦截器
 instance.interceptors.request.use(
     (config)=>{
+        NProgress.start();
+        // config 请求的配置对象
         return config
     }
 )
-
+// 设置响应拦截器
 instance.interceptors.response.use(
+    // 响应成功：响应码状态为 2xx
     (response)=>{
+
+        NProgress.done();
+        // 响应成功不代表功能成功，只代表响应结果
+        // 功能成功需要看 数据中的code值
+        // 成功为 200
+        // 失败为 201 202 等
+        console.log(response)
         if(response.data.code === 200){
             return response.data.data
         }
-
-        return Promise.reject(response.data.message)
+        const message = response.data.message
+        
+        return Promise.reject(message)
     },
 
+    // 响应失败： 状态码不是2xx
     (error) =>{
         const message = error.message || "网络错误"
 

@@ -1,4 +1,6 @@
 import axios from 'axios'
+
+import { Message } from "element-ui";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
@@ -23,7 +25,7 @@ instance.interceptors.response.use(
     // 响应成功：响应码状态为 2xx
     (response)=>{
 
-        NProgress.done();
+        NProgress.done();+
         // 响应成功不代表功能成功，只代表响应结果
         // 功能成功需要看 数据中的code值
         // 成功为 200
@@ -34,13 +36,16 @@ instance.interceptors.response.use(
         }
         const message = response.data.message
         
+        Message.error(message);
         return Promise.reject(message)
     },
 
     // 响应失败： 状态码不是2xx
     (error) =>{
+        NProgress.done();
         const message = error.message || "网络错误"
 
+        Message.error(message);
         return Promise.reject(message)
     }
 )

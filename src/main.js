@@ -7,10 +7,12 @@ import router from './router'
 import "./style/reset.css"
 import "./style/swiper.min.css"
 import './plugins/element.js'
+import store from './store'
 
 Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
   router,
+  store,
 }).$mount('#app')

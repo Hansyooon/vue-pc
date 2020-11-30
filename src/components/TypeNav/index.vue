@@ -1,7 +1,11 @@
 <template>
   <!-- 商品分类导航 -->
   <div class="type-nav">
-    <div class="container">
+    <div
+      class="container"
+      @mouseenter="isSearchShow = true"
+      @mouseleave="isSearchShow = false"
+    >
       <h2 class="all">全部商品分类</h2>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -13,61 +17,161 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div
-            class="item bo"
-            v-for="category in categoryList"
-            :key="category.categoryId"
-          >
-            <h3>
-              <a href="">{{ category.categoryName }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem">
-                <dl
-                  class="fore"
-                  v-for="child in category.categoryChild"
-                  :key="child.categoryId"
+      <transition name="search">
+        <div class="sort" v-show="isHomeShow || isSearchShow">
+          <div class="all-sort-list2" @click="goSearch">
+            <div
+              class="item bo"
+              v-for="category in categoryList"
+              :key="category.categoryId"
+            >
+              <h3>
+                <a
+                  :data-categoryName="category.categoryName"
+                  :data-categoryId="category.categoryId"
+                  :data-categoryType="1"
+                  >{{ category.categoryName }}</a
                 >
-                  <dt>
-                    <a href="">{{ child.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em
-                      v-for="grandChild in child.categoryChild"
-                      :key="grandChild.categoryId"
+                <!-- <router-link
+                :to="`/search?categoryName=${category.categoryName}&category1Id=${category.categoryId}`"
+              >
+                {{ category.categoryName }}
+              </router-link> -->
+                <!-- <a
+                @click.prevent="
+                  $router.push({
+                    name: 'search',
+                    params: {},
+                    query: {
+                      categoryName: category.categoryName,
+                      category1Id: category.categoryId,
+                    },
+                  })
+                "
+                >{{ category.categoryName }}</a
+              > -->
+              </h3>
+              <div class="item-list clearfix">
+                <div class="subitem">
+                  <dl
+                    class="fore"
+                    v-for="child in category.categoryChild"
+                    :key="child.categoryId"
+                  >
+                    <dt>
+                      <a
+                        :data-categoryName="child.categoryName"
+                        :data-categoryId="child.categoryId"
+                        :data-categoryType="2"
+                        >{{ child.categoryName }}</a
+                      >
+                      <!-- <router-link
+                      :to="`/search?categoryName=${child.categoryName}&category1Id=${child.categoryId}`"
                     >
-                      <a href="">{{grandChild.categoryName }}</a>
-                    </em>
-                  </dd>
-                </dl>
+                      {{ child.categoryName }}
+                    </router-link> -->
+                      <!-- <a
+                      @click.prevent="
+                        $router.push({
+                          name: 'search',
+                          params: {},
+                          query: {
+                            categoryName: child.categoryName,
+                            category1Id: child.categoryId,
+                          },
+                        })
+                      "
+                      >{{ child.categoryName }}</a
+                    > -->
+                    </dt>
+                    <dd>
+                      <em
+                        v-for="grandChild in child.categoryChild"
+                        :key="grandChild.categoryId"
+                      >
+                        <a
+                          :data-categoryName="grandChild.categoryName"
+                          :data-categoryId="grandChild.categoryId"
+                          :data-categoryType="3"
+                          >{{ grandChild.categoryName }}</a
+                        >
+                        <!-- <router-link
+                        :to="`/search?categoryName=${grandChild.categoryName}&category1Id=${grandChild.categoryId}`"
+                      >
+                        {{ grandChild.categoryName }}
+                      </router-link> -->
+                        <!-- <a
+                        @click.prevent="
+                          $router.push({
+                            name: 'search',
+                            params: {},
+                            query: {
+                              categoryName: grandChild.categoryName,
+                              category1Id: grandChild.categoryId,
+                            },
+                          })
+                        "
+                        >{{ grandChild.categoryName }}</a
+                      > -->
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
-
-import {mapState,mapActions} from 'vuex'
+import { mapState, mapActions } from "vuex";
 export default {
-  
   name: "TypeNav",
-  computed:{
+  data() {
+    return {
+      isHomeShow: this.$route.path === "/",
+      isSearchShow: false,
+    };
+  },
+  computed: {
     // ...mapState(["categoryList"])
     ...mapState({
-      categoryList:(state) =>state.home.categoryList
-    })
+      categoryList: (state) => state.home.categoryList,
+    }),
   },
-  methods:{
-    ...mapActions(["getCategoryList"])
+  methods: {
+    ...mapActions(["getCategoryList"]),
+
+    goSearch(e) {
+      const { categoryname, categoryid, categorytype } = e.target.dataset;
+
+      if (!categoryname) return;
+
+      this.isSearchShow = false;
+
+      const location = {
+        name: "search",
+        query: {
+          categoryName: categoryname,
+          [`category${categorytype}Id`]: categoryid,
+        },
+      };
+      const {searchText} = this.$route.params
+
+      if(searchText){
+        location.params={
+          searchText
+        }
+      }
+      console.log(location);
+      this.$router.push(location);
+    },
   },
   mounted() {
-    this.getCategoryList()
+    this.getCategoryList();
   },
 };
 </script>
@@ -112,6 +216,14 @@ export default {
       position: absolute;
       background: #fafafa;
       z-index: 999;
+
+      &.search-enter-active{
+        transition: height 0.5s;
+        overflow: hidden;
+      }
+      &.search-enter{
+        height:0px
+      }
 
       .all-sort-list2 {
         .item {
@@ -192,5 +304,10 @@ export default {
       }
     }
   }
+}
+.container::after {
+  content: "";
+  display: block;
+  clear: both;
 }
 </style>

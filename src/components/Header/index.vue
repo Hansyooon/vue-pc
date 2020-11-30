@@ -74,15 +74,19 @@ export default {
         // params: {
         //   searchText,
         // },
-        query: {
-          name: "jake",
-        },
+        // query: {
+        //   name: "jake",
+        // },
       };
       //以下方式可以显示search
       if(searchText){
         location.params={
           searchText
         }
+      }
+      const {categoryName} = this.$route.query;
+      if(categoryName){
+        location.query=this.$route.query;
       }
       //在编程式导航时push和replace函数有三个参数，会返回promise函数，当多次跳转时会返回失败的promis，此时应该处理该失败状态。需要操作promise.then和promise.catch。或者在router中重新定义push以及replace方法
       this.$router.push(location);

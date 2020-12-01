@@ -144,6 +144,7 @@ export default {
     width: 100%;
     min-width: 1200px;
     background-color: #eaeaea;
+    
 }
 #nine-block .block-one{
     padding: 20px;

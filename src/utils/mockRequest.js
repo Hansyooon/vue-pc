@@ -6,7 +6,7 @@ import "nprogress/nprogress.css";
 
 const instance = axios.create({
     //  / 代表当前服务器地址
-    baseURL:"./api",//公共的基础路径
+    baseURL:"/mock",//公共的基础路径
     headers:{
         //token:"xxx"登录接口不需要所以不用写
     },

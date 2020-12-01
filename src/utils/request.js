@@ -30,7 +30,7 @@ instance.interceptors.response.use(
         // 功能成功需要看 数据中的code值
         // 成功为 200
         // 失败为 201 202 等
-        console.log(response)
+        // console.log(response)
         if(response.data.code === 200){
             return response.data.data
         }

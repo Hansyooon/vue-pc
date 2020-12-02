@@ -59,6 +59,15 @@ export default {
       searchText: "",
     };
   },
+  //监视路径判断是否是search页面，不是search页面删除掉search栏中的内容
+  watch:{
+    $route(to){
+      // console.log(to,from)
+      if(to.name !== "search"){
+        this.searchText=""
+      } 
+    }
+  },
   methods: {
     // search(){
     //   const {searchText} = this
@@ -89,10 +98,19 @@ export default {
         location.query=this.$route.query;
       }
       //在编程式导航时push和replace函数有三个参数，会返回promise函数，当多次跳转时会返回失败的promis，此时应该处理该失败状态。需要操作promise.then和promise.catch。或者在router中重新定义push以及replace方法
-      this.$router.push(location);
+      if (this.$route.name === "search") {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
       // this.searchText=''
     },
   },
+  mounted(){
+    this.$bus.$on("clearKeyword",()=>{
+      this.searchText=""
+    })
+  }
 };
 </script>
 

@@ -1,0 +1,33 @@
+@font-face {font-family: "iconfont";
+  src: url('../assets/fonts/iconfont.eot?t=1606903574624'); /* IE9 */
+  src: url('../assets/fonts/iconfont.eot?t=1606903574624#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAMwAAsAAAAAB1wAAALgAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDIgqBTIFFATYCJAMUCwwABCAFhG0HgQUbfgYRFZR5ZF8nb0rb4cUSDMFxP2qkSw1lUMWRchFfKbR8cJudDHn48FQ9EwS1VvbA7iMpAJJIKJkCKh5IqFRk2AKQ/ZNLVNv2eGB+qMlULaasIRUDYGuqxlmTChBPmAtO+GpLPaT3+HV6OYPCNsREfT+YyM0DunEs7Q3Alsm/EUNEuPs8l9ObdhbI/JbltNamK2pTL8A4oED3wChKtCwrEG0ZXruYD/E6BOBIgDgiv7C8nkaD5wlAjI8M9dCFFBptVO0RmA1bNeIEA3u5K5+B4+j94q+UNEgMBV5a/RT0c/1+2FRW2gWBerkAYOwCBcQBDaK3sdSuEIZA4XjaJAmYaATyx/fDZllLGi8iFxyzbA+ozj8PhAmudQYgG8oafuwwGRT82DXSZL4ABwLMNigjge8Jg6PBJwHkwFwYsyDPc3BwdR3TP+kNTZn1xlCf0aSnRkPW0sDlleuOrns3V/3U1f0+urJ6y8lt/8aKd3Np76P1d+fdC+DfzhrWY2N2w2/ifzc3P2/8+wl5/vP3bD5fq7iXqRH5qqIJY1CbcgpF1mX2n/4OYvL+w67luUYD8PY/X2jSKAD7M4cF/Ff1wD7ta7Hb0G43U7kRA9eBcyXgiCNgwTFPH5ax+AwugMC+oJ0QscPfg8KeMFKzcTBwIg0m9mTBkVhFu53wMqsQ2gGIsYkgcHcPElceQOHuOanZ9zDw9R8m7ik40pjtkU5EhNRNZCwFG6i+0NXOEvXKJK6/oRp1yXltJPxBDl0W8iQrV69okZdYEV6qECEgdgYu6DbU2oFn12MtSSviT2lKTQ9KameiCRlLwQZUX9DVzpIYLpPK62+oRl1yR09P/gc5dOODXCIbQF5NdlDPo9wTXqogQoDYGXBBk1BrB3zzpB5rSbQTCv4kJYNoqCnZ3mL+8Qgc+NiVkcrMyracVXHJ7N7iQ1rixr1tHJzummOje/SGeVVW5Buo07qzamOqJmlUZxQBAAAA') format('woff2'),
+  url('../assets/fonts/iconfont.woff?t=1606903574624') format('woff'),
+  url('../assets/fonts/iconfont.ttf?t=1606903574624') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('../assets/fonts/iconfont.svg?t=1606903574624#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-long-arrow-alt-down-solid:before {
+  content: "\e6f6";
+}
+
+.icon-long-arrow-alt-up-solid:before {
+  content: "\e6f7";
+}
+
+.icon-arrow-up-filling:before {
+  content: "\e688";
+}
+
+.icon-arrow-down-filling:before {
+  content: "\e689";
+}
+

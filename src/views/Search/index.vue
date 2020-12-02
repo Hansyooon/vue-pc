@@ -11,38 +11,65 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-show="options.keyword">
+              关键字：{{ options.keyword }}<i @click="delKeyword">×</i>
+            </li>
+            <li class="with-x" v-show="options.categoryName">
+              分类名称：{{ options.categoryName
+              }}<i @click="delCategoryName">×</i>
+            </li>
+            <li class="with-x" v-show="options.trademark">
+              品牌：{{ options.trademark.split(":")[1]
+              }}<i @click="delTrademark">×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+              @click="delProp(index)"
+            >
+              {{ prop.split(":")[2] }}:{{ prop.split(":")[1]
+              }}<i @click="delTrademark">×</i>
+            </li>
           </ul>
         </div>
 
-        <!--selector--> 
-        <SearchSelector />
+        <!--selector-->
+        <SearchSelector :addTrademark="addTrademark" @add-prop="addProp" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: options.order.indexOf('1') > -1 }"
+                  @click="setOrder('1')"
+                >
+                  <a
+                    >综合<i class="iconfont icon-long-arrow-alt-down-solid"></i
+                  ></a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  :class="{ active: options.order.indexOf('2') > -1 }"
+                  @click="setOrder('2')"
+                >
+                  <a
+                    >价格
+                    <span>
+                      <i class="iconfont icon-arrow-up-filling"></i>
+                      <i class="iconfont icon-arrow-down-filling"></i>
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -59,7 +86,7 @@
                   <div class="price">
                     <strong>
                       <em>¥</em>&nbsp;
-                      <i>{{goods.price}}</i>
+                      <i>{{ goods.price }}</i>
                     </strong>
                   </div>
                   <div class="attr">
@@ -67,7 +94,7 @@
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >{{goods.title}}</a
+                      >{{ goods.title }}</a
                     >
                   </div>
                   <div class="commit">
@@ -130,14 +157,97 @@ import TypeNav from "@comps/TypeNav";
 
 export default {
   name: "Search",
+  data() {
+    return {
+      options: {
+        category1Id: "", // 一级分类id
+        category2Id: "", // 二级分类id
+        category3Id: "", // 三级分类id
+        categoryName: "", // 分类名称
+        keyword: "", // 搜索内容（搜索关键字）
+        order: "1:desc", // 排序方式：1：综合排序  2：价格排序   asc 升序  desc 降序
+        pageNo: 1, // 分页的页码（第几页）
+        pageSize: 5, // 分页的每页商品数量
+        props: [], // 商品属性
+        trademark: "", // 品牌
+      },
+    };
+  },
+  watch: {
+    $route() {
+      //$route中的参数为to，from表示去哪和来自哪
+      this.updateProductList();
+    },
+  },
   computed: {
     ...mapGetters(["goodsList"]),
   },
   methods: {
     ...mapActions(["getProductList"]),
+    updateProductList() {
+      const { searchText: keyword } = this.$route.params;
+      const {
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+      } = this.$route.query;
+      const options = {
+        ...this.options,
+        keyword,
+        categoryName,
+        category1Id,
+        category2Id,
+        category3Id,
+      };
+      this.options = options;
+      this.getProductList(options);
+    },
+    delKeyword() {
+      this.options.keyword = "";
+
+      this.$bus.$emit("clearKeyword");
+
+      this.$router.replace({
+        name: "search",
+        query: this.$route.query,
+      });
+    },
+    delCategoryName() {
+      this.options.categoryName = "";
+      this.options.category1Id = "";
+      this.options.category2Id = "";
+      this.options.category3Id = "";
+
+      this.$router.replace({
+        name: "search",
+        params: this.$route.params,
+      });
+    },
+    addTrademark(trademark) {
+      this.options.trademark = trademark;
+      this.updateProductList();
+    },
+    delTrademark() {
+      this.options.trademark = "";
+      this.updateProductList();
+    },
+    addProp(prop) {
+      this.options.props.push(prop);
+      this.updateProductList();
+    },
+    delProp(index) {
+      this.options.props.splice(index, 1);
+      this.updateProductList();
+    },
+    setOrder(order){
+      let [, orderType] = this.options.order.split(":");
+      this.options.order = `${order}:${orderType}`;
+
+    }
   },
   mounted() {
-    this.getProductList();
+    this.updateProductList();
   },
   components: {
     SearchSelector,
@@ -248,11 +358,27 @@ export default {
               line-height: 18px;
 
               a {
-                display: block;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 cursor: pointer;
                 padding: 11px 15px;
                 color: #777;
                 text-decoration: none;
+                // i {
+                //   padding-left: 5px;
+                // }
+                span {
+                  display: flex;
+                  flex-direction: column;
+                  line-height: 8px;
+                  i {
+                    font-size: 12px;
+                    &.deactive {
+                      color: rgba(255, 255, 255, 0.5);
+                    }
+                  }
+                }
               }
 
               &.active {

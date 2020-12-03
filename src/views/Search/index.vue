@@ -47,7 +47,13 @@
                   @click="setOrder('1')"
                 >
                   <a
-                    >综合<i class="iconfont icon-long-arrow-alt-down-solid"></i
+                    >综合<i
+                      :class="{
+                        iconfont: true,
+                        'icon-long-arrow-alt-down-solid': isAllDown,
+                        'icon-long-arrow-alt-up-solid': !isAllDown,
+                      }"
+                    ></i
                   ></a>
                 </li>
                 <li>
@@ -66,8 +72,22 @@
                   <a
                     >价格
                     <span>
-                      <i class="iconfont icon-arrow-up-filling"></i>
-                      <i class="iconfont icon-arrow-down-filling"></i>
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-up-filling': true,
+                          deactive:
+                            options.order.indexOf('2') > -1 && !isPriceUp,
+                        }"
+                      ></i>
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-down-filling': true,
+                          deactive:
+                            options.order.indexOf('2') > -1 && isPriceUp,
+                        }"
+                      ></i>
                     </span>
                   </a>
                 </li>
@@ -115,35 +135,19 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+
+          <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="options.pageNo"
+            :pager-count="7"
+            :page-sizes="[5, 10, 20, 50]"
+            :page-size="5"
+            layout=" prev, pager, next,total, sizes"
+            :total="total"
+          >
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -171,6 +175,8 @@ export default {
         props: [], // 商品属性
         trademark: "", // 品牌
       },
+      isAllDown: true,
+      isPriceUp: true,
     };
   },
   watch: {
@@ -180,11 +186,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["goodsList"]),
+    ...mapGetters(["goodsList","total"]),
   },
   methods: {
     ...mapActions(["getProductList"]),
-    updateProductList() {
+    updateProductList(pageNo=1) {
       const { searchText: keyword } = this.$route.params;
       const {
         categoryName,
@@ -199,6 +205,7 @@ export default {
         category1Id,
         category2Id,
         category3Id,
+        pageNo,
       };
       this.options = options;
       this.getProductList(options);
@@ -240,11 +247,37 @@ export default {
       this.options.props.splice(index, 1);
       this.updateProductList();
     },
-    setOrder(order){
-      let [, orderType] = this.options.order.split(":");
+    setOrder(order) {
+      let [orderNum, orderType] = this.options.order.split(":");
+      //判断orderNum和order相等则为第二次点击，但不知道具体是综合还是价格的二次点击
+      if (orderNum === order) {
+        //判断当前的点击是否是综合排序点击，不是则为价格排序点击
+        if (order === "1") {
+          this.isAllDown = !this.isAllDown;
+        } else {
+          this.isPriceUp = !this.isPriceUp;
+        }
+        orderType = orderType === "desc" ? "asc" : "desc";
+      } else {
+        this.isPriceUp = true;
+        if (order === "1") {
+          orderType = this.isAllDown ? "desc" : "asc";
+        } else {
+          this.isPriceUp = true;
+          orderType = "asc";
+        }
+      }
       this.options.order = `${order}:${orderType}`;
-
+      this.updateProductList();
+    },
+    handleSizeChange(pageSize){
+      this.options.pageSize = pageSize;
+      this.updateProductList();
+    },
+    handleCurrentChange(pageNo){
+      this.updateProductList(pageNo);
     }
+
   },
   mounted() {
     this.updateProductList();

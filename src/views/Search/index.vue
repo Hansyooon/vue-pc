@@ -42,10 +42,7 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li
-                  :class="{ active: options.order.indexOf('1') > -1 }"
-                  @click="setOrder('1')"
-                >
+                <li :class="{ active: isorder(1) }" @click="setOrder('1')">
                   <a
                     >综合<i
                       :class="{
@@ -65,10 +62,7 @@
                 <li>
                   <a>评价</a>
                 </li>
-                <li
-                  :class="{ active: options.order.indexOf('2') > -1 }"
-                  @click="setOrder('2')"
-                >
+                <li :class="{ active: isorder(2) }" @click="setOrder('2')">
                   <a
                     >价格
                     <span>
@@ -76,16 +70,14 @@
                         :class="{
                           iconfont: true,
                           'icon-arrow-up-filling': true,
-                          deactive:
-                            options.order.indexOf('2') > -1 && !isPriceUp,
+                          deactive: isorder(2) && !isPriceUp,
                         }"
                       ></i>
                       <i
                         :class="{
                           iconfont: true,
                           'icon-arrow-down-filling': true,
-                          deactive:
-                            options.order.indexOf('2') > -1 && isPriceUp,
+                          deactive: isorder(2) && isPriceUp,
                         }"
                       ></i>
                     </span>
@@ -135,8 +127,14 @@
               </li>
             </ul>
           </div>
-
-          <el-pagination
+          <Pagination
+            @current-change="handleCurrentChange"
+            :current-page="options.pageNo"
+            :pager-count="7"
+            :page-size="5"
+            :total="total"
+          />
+          <!-- <el-pagination
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -147,7 +145,7 @@
             layout=" prev, pager, next,total, sizes"
             :total="total"
           >
-          </el-pagination>
+          </el-pagination> -->
         </div>
       </div>
     </div>
@@ -158,6 +156,7 @@
 import { mapGetters, mapActions } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 import TypeNav from "@comps/TypeNav";
+import Pagination from "@comps/Pagination";
 
 export default {
   name: "Search",
@@ -186,11 +185,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["goodsList","total"]),
+    ...mapGetters(["goodsList", "total"]),
   },
   methods: {
     ...mapActions(["getProductList"]),
-    updateProductList(pageNo=1) {
+    updateProductList(pageNo = 1) {
       const { searchText: keyword } = this.$route.params;
       const {
         categoryName,
@@ -210,6 +209,7 @@ export default {
       this.options = options;
       this.getProductList(options);
     },
+    // 删除搜索关键字搜索
     delKeyword() {
       this.options.keyword = "";
 
@@ -220,6 +220,7 @@ export default {
         query: this.$route.query,
       });
     },
+    // 删除分类名称搜索
     delCategoryName() {
       this.options.categoryName = "";
       this.options.category1Id = "";
@@ -231,22 +232,29 @@ export default {
         params: this.$route.params,
       });
     },
+    // 添加品牌搜索
     addTrademark(trademark) {
+      if (this.options.trademark) return;
       this.options.trademark = trademark;
       this.updateProductList();
     },
+    // 删除品牌搜索
     delTrademark() {
       this.options.trademark = "";
       this.updateProductList();
     },
+    // 添加商品属性搜索
     addProp(prop) {
+      if (this.options.props.indexOf(prop) > -1) return;
       this.options.props.push(prop);
       this.updateProductList();
     },
+    // 删除商品属性搜索
     delProp(index) {
       this.options.props.splice(index, 1);
       this.updateProductList();
     },
+    // 设置排序方式
     setOrder(order) {
       let [orderNum, orderType] = this.options.order.split(":");
       //判断orderNum和order相等则为第二次点击，但不知道具体是综合还是价格的二次点击
@@ -270,14 +278,18 @@ export default {
       this.options.order = `${order}:${orderType}`;
       this.updateProductList();
     },
-    handleSizeChange(pageSize){
+    // 分页器每页商品数量设置及请求
+    handleSizeChange(pageSize) {
       this.options.pageSize = pageSize;
       this.updateProductList();
     },
-    handleCurrentChange(pageNo){
+    // 分页器页码选择及请求
+    handleCurrentChange(pageNo) {
       this.updateProductList(pageNo);
-    }
-
+    },
+    isorder(order) {
+      return this.options.order.indexOf(order) > -1;
+    },
   },
   mounted() {
     this.updateProductList();
@@ -285,6 +297,7 @@ export default {
   components: {
     SearchSelector,
     TypeNav,
+    Pagination,
   },
 };
 </script>

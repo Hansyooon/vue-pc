@@ -69,9 +69,8 @@ export default {
     };
   },
   watch:{
-      myCurrentPage(currentPage){
-        
-          this.$emit("current-change",currentPage)
+      myCurrentPage(mycurrentPage){
+          this.$emit("current-change",mycurrentPage)
       },
       currentPage(currentPage){
           this.myCurrentPage=currentPage

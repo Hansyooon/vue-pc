@@ -5,6 +5,8 @@ import Login from '../views/Login'
 import Register from '../views/Register'
 import Search from '../views/Search'
 
+import Detail from '@views/Detail'
+
 const push = VueRouter.prototype.push
 const replace = VueRouter.prototype.replace
 
@@ -53,5 +55,14 @@ export default new VueRouter({
             component:Search,
             
         },
-    ]
+        {
+            name:"detail",
+            path:"/detail/:id",
+            component:Detail
+        }
+    ],
+    // 每次切换路由页面滚动条位置
+    scrollBehavior() {
+		return { x: 0, y: 0 };
+	},
 })

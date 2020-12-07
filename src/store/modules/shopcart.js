@@ -13,6 +13,7 @@ export default {
 	actions: {
 		async getCartList({ commit }) {
 			const cartList = await reqGetCartList();
+			console.log(cartList)
 			commit("GET_CART_LIST", cartList);
 		},
 		async updateCartCount({ commit }, { skuId, skuNum }) {

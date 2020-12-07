@@ -114,6 +114,7 @@ export default {
       // this.getCartList();
     },
   },
+  
   mounted() {
     this.getCartList();
   },

@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { Message } from "element-ui";
 import getUserTempId from "@utils/getUserTempId";
+import store from '@store'
 
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -21,8 +22,13 @@ instance.interceptors.request.use(
     (config)=>{
         NProgress.start();
         // config 请求的配置对象
-
+        const token = store.state.user.token
+        if(token){
+            config.headers.token = token;
+        }
+        
         config.headers.userTempId = userTempId;
+        
         return config
     }
 )

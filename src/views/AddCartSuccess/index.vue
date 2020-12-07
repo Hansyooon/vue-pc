@@ -5,13 +5,13 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img src="good.skuDefaultImg" />
+            <img :src="cartList[0]&&cartList[0].imgUrl" />
           </div>
           <div class="right-info">
             <p class="title">
-              小米红米 Redmi note8 手机 梦幻蓝 全网通(4GB+64GB)
+              {{cartList[0]&&cartList[0].skuName}}
             </p>
-            <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：2</p>
+            <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：{{cartList[0]&&cartList[0].skuNum}}</p>
           </div>
         </div>
         <div class="right-gocart">
@@ -24,8 +24,35 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 export default {
   name: "AddCartSuccess",
+  watch:{
+    cartList(){
+      
+    }
+  },
+  computed:{
+     ...mapState({
+      cartList: (state) => state.shopcart.cartList,
+    })
+  },
+  methods: {
+    ...mapActions(["getCartList", "updateCartCount"]),
+    // 更新商品数量
+    
+    async updateCount(skuId, skuNum) {
+      // 更新商品
+      await this.updateCartCount({ skuId, skuNum });
+      // 刷新页面
+      // this.getCartList();
+    },
+  },
+  
+  mounted() {
+    this.getCartList();
+  },
+
 };
 </script>
 

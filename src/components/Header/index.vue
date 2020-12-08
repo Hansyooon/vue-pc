@@ -85,7 +85,7 @@ export default {
       await this.logout()
       localStorage.removeItem("name")
       localStorage.removeItem("token")
-
+      this.$router.replace("/")
     },
     search() {
       const { searchText } = this;

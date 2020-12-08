@@ -6,6 +6,11 @@ import Register from '../views/Register'
 import Search from '../views/Search'
 import AddCartSuccess from "../views/AddCartSuccess";
 import ShopCart from "../views/ShopCart";
+import Center from "../views/Center";
+import Pay from "../views/Pay";
+import PaySuccess from "../views/PaySuccess";
+import Trade from "../views/Trade";
+import store from '@store'
 
 import Detail from '@views/Detail'
 
@@ -31,7 +36,7 @@ VueRouter.prototype.replace=function(location,onComlete,onAbort){
 
 Vue.use(VueRouter)
 
-export default new VueRouter({
+const router = new VueRouter({
     routes:[
         {
             path:"/",
@@ -73,6 +78,31 @@ export default new VueRouter({
 			name: "shopcart",
 			path: "/shopcart",
 			component: ShopCart,
+        },
+    
+		{
+			// 命名路由
+			name: "trade",
+			path: "/trade",
+			component: Trade,
+		},
+		{
+			// 命名路由
+			name: "pay",
+			path: "/pay",
+			component: Pay,
+		},
+		{
+			// 命名路由
+			name: "paysuccess",
+			path: "/paysuccess",
+			component: PaySuccess,
+		},
+		{
+			// 命名路由
+			name: "center",
+			path: "/center/myorder",
+			component: Center,
 		},
     ],
     // 每次切换路由页面滚动条位置
@@ -80,3 +110,12 @@ export default new VueRouter({
 		return { x: 0, y: 0 };
 	},
 })
+const permissionPaths = ["trade","pay","center"]
+router.beforeEach((to,from,next)=>{
+    if(permissionPaths.indexOf(to.name)>-1 && !store.state.user.token){
+        next("login")
+    }
+    next()
+})
+
+export default router

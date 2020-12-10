@@ -2,8 +2,8 @@ import { reqGetBaseCategoryList, reqGetBanners, reqGetFloors } from '@api/home';
 export default {
 	state: {
 		categoryList: [],
-        banners: [],
-        floors:[]
+		banners: [],
+		floors: []
 	},
 	getters: {},
 	actions: {
@@ -16,8 +16,8 @@ export default {
 		async getBanners({ commit }) {
 			const banners = await reqGetBanners();
 			commit('GET_BANNERS', banners);
-        },
-        async getFloors({ commit }) {
+		},
+		async getFloors({ commit }) {
 			const floors = await reqGetFloors();
 			commit('GET_FLOORS', floors);
 		}
@@ -28,8 +28,8 @@ export default {
 		},
 		GET_BANNERS(state, banners) {
 			state.banners = banners;
-        },
-        GET_FLOORS(state, floors) {
+		},
+		GET_FLOORS(state, floors) {
 			state.floors = floors;
 		}
 	}

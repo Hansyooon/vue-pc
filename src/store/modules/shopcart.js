@@ -1,26 +1,26 @@
 import {
 	reqGetCartList,
 	reqUpdateCartCheck,
-	reqUpdateCartCount,
+	reqUpdateCartCount
 	// reqDelCart,
-} from "@api/shopcart";
+} from '@api/shopcart';
 
 export default {
 	state: {
-		cartList: [], // 所有购物车数据
+		cartList: [] // 所有购物车数据
 	},
 	getters: {},
 	actions: {
 		async getCartList({ commit }) {
 			const cartList = await reqGetCartList();
-			console.log(cartList)
-			commit("GET_CART_LIST", cartList);
+
+			commit('GET_CART_LIST', cartList);
 		},
 		async updateCartCount({ commit }, { skuId, skuNum }) {
 			await reqUpdateCartCount(skuId, skuNum);
 			// 1. 手动更新vuex的数据 --> 页面就会重新渲染
 			// 2. 重新请求所有购物车数据
-			commit("UPDATE_CART_COUNT", { skuId, skuNum });
+			commit('UPDATE_CART_COUNT', { skuId, skuNum });
 		},
 
 		// actions函数只能接受外面的一个参数
@@ -31,7 +31,7 @@ export default {
 			// 1. 手动更新vuex的数据 --> 页面就会重新渲染
 			// 2. 重新请求所有购物车数据
 			console.log(commit);
-		},
+		}
 	},
 	mutations: {
 		GET_CART_LIST(state, cartList) {
@@ -44,6 +44,6 @@ export default {
 				}
 				return cart;
 			});
-		},
-	},
+		}
+	}
 };

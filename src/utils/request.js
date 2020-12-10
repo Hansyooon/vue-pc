@@ -60,6 +60,7 @@ instance.interceptors.response.use(
         Message.error(message);
         return Promise.reject(message)
     }
+    
 )
 
 export default instance

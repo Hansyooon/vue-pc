@@ -70,126 +70,67 @@
               </table>
             </div>
             <div class="orders">
-              <table class="order-item">
+              <table class="order-item" v-for="shopList in records" :key="shopList.id">
                 <thead>
                   <tr>
                     <th colspan="5">
                       <span class="ordertitle"
-                        >2017-02-11 11:59订单编号：7867473872181848
+                        >{{shopList.createTime}}&nbsp;订单编号：{{shopList.outTradeNo}}
                         <span class="pull-right delete"
-                          ><img src="./images/delete.png" /></span
+                          ><img  src="./images/delete.png" /></span
                       ></span>
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td width="60%">
-                      <div class="typographic">
-                        <img src="./images/goods.png" />
+                <tbody >
+                  <tr v-for="(DetailList,index) in shopList.orderDetailList" :key="DetailList.id">
+                    <td width="60%"  >
+                      <div class="typographic" >
+                        <img style="width:100px" :src="DetailList.imgUrl" />
                         <a href="#" class="block-text"
-                          >包邮正品玛姬儿压缩面膜无纺布纸膜100粒
-                          送泡瓶面膜刷喷瓶 新款</a
+                          >{{DetailList.skuName}}</a
                         >
-                        <span>x1</span>
+                        <span>x{{DetailList.skuNum}}</span>
                         <a href="#" class="service">售后申请</a>
                       </div>
                     </td>
-                    <td rowspan="2" width="8%" class="center">小丽</td>
-                    <td rowspan="2" width="13%" class="center">
+                    <!-- 
+                        子模板: 组件<temlate>内部的<template>
+                        它在模板解决过程中存在, 不会显示到页面上(不会改变原本的标签结构)
+                        利用它可以做什么? 可以通过来来统一控制多个标签
+                      -->
+                    <template v-if="index === 0">
+                      <td :rowspan="shopList.orderDetailList.length" width="8%" class="center">{{shopList.consignee}}</td>
+                    <td :rowspan="shopList.orderDetailList.length" width="13%" class="center">
                       <ul class="unstyled">
-                        <li>总金额¥138.00</li>
-                        <li>在线支付</li>
+                        <li>总金额¥{{shopList.totalAmount}}</li>
+                        <li>{{shopList.paymentWay==='ONLINE'?'在线支付':'货到付款'}}</li>
                       </ul>
                     </td>
-                    <td rowspan="2" width="8%" class="center">
-                      <a href="#" class="btn">已完成 </a>
+                    <td :rowspan="shopList.orderDetailList.length" width="8%" class="center">
+                      <a href="#" class="btn">{{shopList.orderStatusName}} </a>
                     </td>
-                    <td rowspan="2" width="13%" class="center">
+                    <td :rowspan="shopList.orderDetailList.length" width="13%" class="center">
                       <ul class="unstyled">
                         <li>
                           <a href="mycomment.html" target="_blank">评价|晒单</a>
                         </li>
                       </ul>
                     </td>
-                  </tr>
-                  <tr>
-                    <td width="50%">
-                      <div class="typographic">
-                        <img src="./images/goods.png" />
-                        <a href="#" class="block-text"
-                          >包邮 正品玛姬儿压缩面膜无纺布纸膜100粒
-                          送泡瓶面膜刷喷瓶 新款</a
-                        >
-                        <span>x1</span>
-                        <a href="#" class="service">售后申请</a>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <table class="order-item">
-                <thead>
-                  <tr>
-                    <th colspan="5">
-                      <span class="ordertitle"
-                        >2017-02-11 11:59订单编号：7867473872181848
-                        <span class="pull-right delete"
-                          ><img src="./images/delete.png" /></span
-                      ></span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td width="60%">
-                      <div class="typographic">
-                        <img src="./images/goods.png" />
-                        <a href="#" class="block-text"
-                          >包邮 正品玛姬儿压缩面膜无纺布纸膜100粒
-                          送泡瓶面膜刷喷瓶 新款</a
-                        >
-                        <span>x1</span>
-                        <a href="#" class="service">售后申请</a>
-                      </div>
-                    </td>
-                    <td rowspan="2" width="8%" class="center">小丽</td>
-                    <td rowspan="2" width="13%" class="center">
-                      <ul class="unstyled">
-                        <li>总金额¥138.00</li>
-                        <li>在线支付</li>
-                      </ul>
-                    </td>
-                    <td rowspan="2" width="8%" class="center">
-                      <a href="#" class="btn">已完成 </a>
-                    </td>
-                    <td rowspan="2" width="13%" class="center">
-                      <ul class="unstyled">
-                        <li>
-                          <a href="mycomment.html" target="_blank">评价|晒单</a>
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="50%">
-                      <div class="typographic">
-                        <img src="./images/goods.png" />
-                        <a href="#" class="block-text"
-                          >包邮 正品玛姬儿压缩面膜无纺布纸膜100粒
-                          送泡瓶面膜刷喷瓶 新款</a
-                        >
-                        <span>x1</span>
-                        <a href="#" class="service">售后申请</a>
-                      </div>
-                    </td>
+                    </template>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="choose-order">
-              <div class="pagination">
+               <Pagination
+                  @current-change="handleCurrentChange"
+                  :current-page="page"
+                  :pager-count="7"
+                  :page-size="5"
+                  :total="orderShopList.total"
+              />
+              <!-- <div class="pagination">
                 <ul>
                   <li class="prev disabled">
                     <a href="javascript:">«上一页</a>
@@ -214,7 +155,7 @@
                 <div>
                   <span>&nbsp;&nbsp;&nbsp;&nbsp;共2页&nbsp;</span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
           <!--猜你喜欢-->
@@ -280,8 +221,46 @@
 </template>
 
 <script>
+import Pagination from "@comps/Pagination";
+import { mapGetters,mapActions } from "vuex";
 export default {
   name: "",
+  data() {
+    return {
+      page: 1,
+      limit: 5,
+      pageNo:1,
+    };
+  },
+  watch: {
+    $route() {
+      //$route中的参数为to，from表示去哪和来自哪
+      this.updateProductList();
+    },
+  },
+  computed: {
+    ...mapGetters(["records","orderShopList"])
+  },
+  methods: {
+    ...mapActions(["getOrderShopList"]),
+   updateProductList(page=1,limit) {
+       this.page=page
+       limit = this.limit
+      this.getOrderShopList({page,limit});
+       window.scrollTo(0,0);
+    },
+    handleCurrentChange(page) {
+      this.updateProductList(page);
+    },
+  },
+  mounted() {
+    // const { page, limit } = this;
+    // this.getOrderShopList({page, limit});
+    this.updateProductList()
+  },
+  components:{
+    Pagination,
+  }
 };
 </script>
 
